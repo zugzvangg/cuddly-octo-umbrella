@@ -41,7 +41,7 @@ def check_date(message):
 
 
 def check_time_new(message):
-    if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
+    if re.match(r'^(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
         structure.time_begin = message.text
         bot.send_message(message.chat.id,'Введите время, когда закончите стримить в формате: <b>12:25</b>', parse_mode='html')
@@ -52,7 +52,7 @@ def check_time_new(message):
 
 
 def check_time_end(message):
-    if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
+    if re.match(r'^(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
         structure.time_end = message.text
         print(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
@@ -82,8 +82,7 @@ def delete(message):
     bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
 
 def checking_delete(tmp, message):
-    if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])\s[0-2][0-3]:[0-5][0-9]$', message.text):
-        print(message.from_user.first_name,message.text.split()[0], message.text.split()[1])
+    if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])\s(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
         db.delete(message.from_user.first_name,message.text.split()[0], message.text.split()[1])
         bot.send_message(message.chat.id, 'Запись удалена!')
     else:
@@ -91,9 +90,32 @@ def checking_delete(tmp, message):
         bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
 
 
+@bot.message_handler(commands = ['streams'])
+def get_streams(message):
+    bot.send_message(message.chat.id,'Список ваших записей:')
+    ls = db.get_users_streams('123')
+    tmp = []
+    for i in ls:
+        tmp.append((i[1], i[2]))
+    if len(tmp)==0:
+        bot.send_message(message.chat.id, 'У вас нет активных записей')
+        return
+    res = ""
+    res+='Date             Time\n'
+    for i in tmp:
+        res+=i[0]+' '+i[1]+'\n'
+    bot.send_message(message.chat.id, res)
+
+@bot.message_handler(commands = ['today'])
+def today(message):
+    bot.send_message(message.chat.id,'Ваши стримы за сегодня:')
+    today = datetime.date.today().strftime('%Y/%m/%d')
+    
 
 
 
- 
+
+
 
 bot.polling(none_stop = True)
+
