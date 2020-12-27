@@ -3,8 +3,13 @@ import telebot
 import config
 from telebot import types
 import random
+from sql import SQL
+import datetime
+
 
 bot = telebot.TeleBot(config.TOKEN)
+db = SQL('streamers')
+ 
 
 @bot.message_handler(commands = ['start'])
 def welcome(message):
@@ -13,7 +18,10 @@ def welcome(message):
     markup.add(item1)
     bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. 
     Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия.""".format(message.from_user), parse_mode='html', reply_markup=markup)
+    global usr
+    usr = message.from_user.first_name
     
+
 
     
 
@@ -36,6 +44,9 @@ def callback_inline(call):
         if call.message:
             if call.data == 'new':
                 bot.send_message(call.message.chat.id, 'Добавляю в базу')
+                tm = str(datetime.datetime.now().time()).split(':')[0]+':'+str(datetime.datetime.now().time()).split(':')[1]+':00'
+                print(usr, str(datetime.datetime.now().date()), tm, tm)
+                db.add(usr, str(datetime.datetime.now().date()), tm, tm)
             elif call.data == 'del':
                 bot.send_message(call.message.chat.id, 'Удаляю из базы')
             elif call.data == 'stat':
