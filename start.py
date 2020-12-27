@@ -93,7 +93,7 @@ def checking_delete(tmp, message):
 @bot.message_handler(commands = ['streams'])
 def get_streams(message):
     bot.send_message(message.chat.id,'Список ваших записей:')
-    ls = db.get_users_streams('123')
+    ls = db.get_users_streams(message.from_user.first_name)
     tmp = []
     for i in ls:
         tmp.append((i[1], i[2]))
@@ -110,7 +110,18 @@ def get_streams(message):
 def today(message):
     bot.send_message(message.chat.id,'Ваши стримы за сегодня:')
     today = datetime.date.today().strftime('%Y/%m/%d')
-    
+    ls = db.get_today_streams(today)
+    tmp = []
+    for i in ls:
+        tmp.append((i[2], i[3]))
+    if len(tmp)==0:
+        bot.send_message(message.chat.id, 'У вас сегодня нет стримов!')
+        return
+    res = ""
+    res+='Begin      End\n'
+    for i in tmp:
+        res+=i[0]+'     '+i[1]+'\n'
+    bot.send_message(message.chat.id, res)
 
 
 

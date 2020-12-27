@@ -19,3 +19,7 @@ class SQL:
 
     def close(self):
         self.connection.close()
+
+    def get_today_streams(self, today):
+        with self.connection:
+            return self.cursor.execute('SELECT * FROM `streamers` WHERE `date` = ?', (today,)).fetchall()
