@@ -43,7 +43,7 @@ def check_date(message):
 def check_time_new(message):
     if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
-        structure.time_begin = message.text + ':00'
+        structure.time_begin = message.text
         bot.send_message(message.chat.id,'Введите время, когда закончите стримить в формате: <b>12:25</b>', parse_mode='html')
         bot.register_next_step_handler(message, check_time_end)
     else:
@@ -54,9 +54,9 @@ def check_time_new(message):
 def check_time_end(message):
     if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
-        structure.time_end = message.text + ':00'
-        print(structure.usr, structure.date,structure.time_begin, structure.time_end)
-        db.add(structure.usr, structure.date,structure.time_begin, structure.time_end)
+        structure.time_end = message.text
+        print(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
+        db.add(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
         bot.send_message(message.chat.id, 'Записано!')
     else:
         bot.send_message(message.chat.id,'Неверный формат времени, введите заново.')
@@ -83,8 +83,8 @@ def delete(message):
 
 def checking_delete(tmp, message):
     if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])\s[0-2][0-3]:[0-5][0-9]$', message.text):
-        print(message.from_user.first_name,message.text.split()[0], message.text.split()[1]+':00')
-        db.delete(message.from_user.first_name,message.text.split()[0], message.text.split()[1]+':00')
+        print(message.from_user.first_name,message.text.split()[0], message.text.split()[1])
+        db.delete(message.from_user.first_name,message.text.split()[0], message.text.split()[1])
         bot.send_message(message.chat.id, 'Запись удалена!')
     else:
         bot.send_message(message.chat.id,'Неверный формат , введите заново.')
