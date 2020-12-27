@@ -6,10 +6,15 @@ import random
 from sql import SQL
 import datetime
 import re
+from Structure import Structure
+
+
 
 
 bot = telebot.TeleBot(config.TOKEN)
 db = SQL('streamers')
+structure = Structure() 
+ 
  
 
 @bot.message_handler(commands = ['start'])
@@ -19,14 +24,10 @@ def welcome(message):
     markup.add(item1)
     bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. 
     Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия.""".format(message.from_user), parse_mode='html', reply_markup=markup)
-    global usr
-    usr = message.from_user.first_name
-    
-global time_begin
-global time_end
-global date
+    structure.usr = message.from_user.first_name
     
 
+    
 @bot.message_handler(content_types=['text'])
 def begin(message):
     if message.chat.type == 'private':
@@ -56,41 +57,37 @@ def date_new(message):
 def check_date(message):
     if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
-        date = message.text
+        structure.date = message.text
         bot.send_message(message.chat.id,'Введите время, когда хотите стримить в формате: <b>12:25</b>', parse_mode='html')
-        bot.register_next_step_handler(message, time_beg_new)
+        bot.register_next_step_handler(message, check_time_new)
     else:
         bot.send_message(message.chat.id,'Неверный формат даты, введите заново.')
-        bot.register_next_step_handler(message, date_new)
+        bot.register_next_step_handler(message, check_date)
 
 
-def time_beg_new(message):
-    bot.register_next_step_handler(message, check_beg_time)
-
-def check_beg_time(message):
+def check_time_new(message):
     if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
-        time_begin = message.text + ':00'
-        bot.register_next_step_handler(message, check_beg_time)
+        structure.time_begin = message.text + ':00'
+        bot.send_message(message.chat.id,'Введите время, когда закончите стримить в формате: <b>12:25</b>', parse_mode='html')
+        bot.register_next_step_handler(message, check_time_end)
     else:
         bot.send_message(message.chat.id,'Неверный формат времени, введите заново.')
-        bot.register_next_step_handler(message, time_beg_new)
+        bot.register_next_step_handler(message, check_time_new)
 
-def time_end_new(message):
-    bot.send_message(message.chat.id,'Введите время, когда закончите стримить в формате: <b>12:25</b>', parse_mode='html')
-    bot.register_next_step_handler(message, check_end_time)
 
-def check_end_time(message):
+def check_time_end(message):
     if re.match(r'^[0-2][0-3]:[0-5][0-9]$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
-        time_end = message.text + ':00'
-        bot.register_next_step_handler(message, sql_new)
+        structure.time_end = message.text + ':00'
+        print(structure.usr, structure.date,structure.time_begin, structure.time_end)
+        db.add(structure.usr, structure.date,structure.time_begin, structure.time_end)
+        bot.send_message(message.chat.id, 'Записано!')
     else:
         bot.send_message(message.chat.id,'Неверный формат времени, введите заново.')
-        bot.register_next_step_handler(message, time_end_new)
+        bot.register_next_step_handler(message, check_time_end)
 
-def sql_new(message):
-    bot.send_message(message.chat.id,'nice')
+
 
 
 
