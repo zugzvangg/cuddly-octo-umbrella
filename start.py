@@ -22,8 +22,7 @@ def welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item1 = types.KeyboardButton("Начать!")
     markup.add(item1)
-    bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. 
-    Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия.""".format(message.from_user), parse_mode='html', reply_markup=markup)
+    bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия.""".format(message.from_user), parse_mode='html', reply_markup=markup)
     structure.usr = message.from_user.first_name
     
 
@@ -33,10 +32,10 @@ def begin(message):
     if message.chat.type == 'private':
         if message.text == 'Начать!':
             bot.send_message(message.chat.id, """Этот бот поможет тебе выбирать время стрима, отказываться от него, а так же смотреть свою статистику. Функция <b>/new</b> - чтобы выбрать время. Функция <b>/delete</b> - чтобы удалить, <b>/stat</b> - ваша статистика. Введите что угодно.""", parse_mode='html')
-            bot.register_next_step_handler(message, reg)
- 
-def reg(message):
-    bot.send_message(message.chat.id,"""Введите <b>/new</b> - новая запись. <b>/delete</b> - удалить. <b>/stat</b> - ваша статистика""", parse_mode='html')
+            bot.register_next_step_handler(message, mid)
+
+def mid(message):
+    bot.send_message(message.chat.id,'Введите команду')
     bot.register_next_step_handler(message, choose)
 
 def choose(message):
@@ -83,38 +82,16 @@ def check_time_end(message):
         print(structure.usr, structure.date,structure.time_begin, structure.time_end)
         db.add(structure.usr, structure.date,structure.time_begin, structure.time_end)
         bot.send_message(message.chat.id, 'Записано!')
+        bot.register_next_step_handler(message, mid)
     else:
         bot.send_message(message.chat.id,'Неверный формат времени, введите заново.')
         bot.register_next_step_handler(message, check_time_end)
 
+def delete(message):
+    pass
 
 
 
-
-
-
-
-
-
-
-    
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    try:
-        if call.message:
-            if call.data == 'new':
-                bot.send_message(call.message.chat.id, 'Добавляю в базу')
-                tm = str(datetime.datetime.now().time()).split(':')[0]+':'+str(datetime.datetime.now().time()).split(':')[1]+':00'
-                print(usr, str(datetime.datetime.now().date()), tm, tm)
-                db.add(usr, str(datetime.datetime.now().date()), tm, tm)
-                bot.send_message(call.message.chat.id, 'Добавляю в базу')
-            elif call.data == 'del':
-                bot.send_message(call.message.chat.id, 'Удаляю из базы')
-            elif call.data == 'stat':
-                bot.send_message(call.message.chat.id, 'Статистика:')
-
- 
  
     except Exception as e:
         print(repr(e)) 
