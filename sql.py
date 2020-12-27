@@ -11,7 +11,11 @@ class SQL:
     
     def delete(self, streamer, date, begin):
         with self.connection:
-            return self.cursor.execute("DELETE FROM 'streamers' WHERE 'streamer'=?  AND 'date'=? AND 'begin'=?", (streamer, date, begin,))
+            return self.cursor.execute("DELETE FROM `streamers` WHERE `streamer`=?  AND `date`=? AND `begin`=?", (streamer, date, begin,))
+
+    def get_users_streams(self, streamer):
+        with self.connection:
+            return self.cursor.execute('SELECT * FROM `streamers` WHERE `streamer` = ?', (streamer,)).fetchall()
 
     def close(self):
         self.connection.close()
