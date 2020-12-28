@@ -30,7 +30,7 @@ def date_new(message):
     bot.register_next_step_handler(message, check_date)
 
 def check_date(message):
-    if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])$', message.text):
+    if re.match(r'^202\d\/((1[0-2])|(0?[1-9]))\/((1[0-9])|(2[0-9])|(3[0-1])|(0?[0-9]))$', message.text):
         bot.send_message(message.chat.id, 'Ок!')
         structure.date = message.text
         bot.send_message(message.chat.id,'Введите время, когда хотите стримить в формате: <b>12:25</b>', parse_mode='html')
@@ -82,7 +82,7 @@ def delete(message):
     bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
 
 def checking_delete(tmp, message):
-    if re.match(r'^202\d\/\d[0-2]\/([1-2]?[1-9]|[1-3][0-2])\s(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
+    if re.match(r'^202\d\/((1[0-2])|(0?[1-9]))\/((1[0-9])|(2[0-9])|(3[0-1])|(0?[0-9]))\s(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
         db.delete(message.from_user.first_name,message.text.split()[0], message.text.split()[1])
         bot.send_message(message.chat.id, 'Запись удалена!')
     else:
