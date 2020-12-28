@@ -19,7 +19,7 @@ def welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     item1 = types.KeyboardButton("Начать!")
     markup.add(item1)
-    bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия.""".format(message.from_user), parse_mode='html', reply_markup=markup)
+    bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия. Чтобы работать с ботом, вводи команды с помощью <b>/</b>. Удачи!""".format(message.from_user), parse_mode='html', reply_markup=markup)
     structure.usr = message.from_user.first_name
     
 
@@ -110,7 +110,7 @@ def get_streams(message):
 def today(message):
     bot.send_message(message.chat.id,'Ваши стримы за сегодня:')
     today = datetime.date.today().strftime('%Y/%m/%d')
-    ls = db.get_today_streams(today)
+    ls = db.get_today_streams(today, message.from_user.first_name)
     tmp = []
     for i in ls:
         tmp.append((i[2], i[3]))
