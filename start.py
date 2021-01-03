@@ -7,12 +7,15 @@ from sql import SQL
 import datetime
 import re
 from Structure import Structure
+import json
 
-
+conf = 'CONFIG.json'
+with open(conf) as jf:
+    configuration = json.load(jf)
 bot = telebot.TeleBot(config.TOKEN)
-db = SQL('streamers')
+db = SQL(configuration['setup']['database'])
 structure = Structure() 
- 
+
 
 @bot.message_handler(commands = ['start'])
 def welcome(message):
@@ -123,19 +126,7 @@ def today(message):
         res+=i[0]+'     '+i[1]+'\n'
     bot.send_message(message.chat.id, res)
 
-@bot.message_handler(commands = ['stat'])
-def get_stat(message):
-    bot.send_message(message.chat.id,'За все время вы стримили:')
-    ls = db.get_users_streams(message.from_user.first_name)
-    all = 0
-    for i in ls:
-        #all+= int((datetime.datetime(i[2])- datetime.datetime(i[3])).seconds)
-    if all==0:
-        bot.send_message(message.chat.id, 'Ваш список стримов пуст')
-        return
-    bot.send_message(message.chat.id,sum)
-    print(sum)
-    
+
 
 
 
