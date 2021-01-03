@@ -1,0 +1,52 @@
+{"setup":
+    {
+        "database": "streamers"
+    },
+   "commands":
+   {
+       "start":
+       {
+           "name":"start",
+           "begin_button":"Start!",
+           "hello":"Hello, <b>{0.first_name}</b>!\n This bot is created to organize the process of streaming in out project. Here you can sign, when you start streaming and some other moves. To start work, enter the commands using <b>/</b>. Good luck!"
+       },
+       "new":
+       {
+            "name":"new",
+            "enter_date":"Enter the date in format: <b>2021/11/25</b>",
+            "check_ok":"Ok!",
+            "re_date_match": "^202[0-9]\/((1[0-2])|(0?[1-9]))\/((1[0-9])|(2[0-9])|(3[0-1])|(0?[0-9]))$",
+            "enter_time_beg":"Enter the time, when you plan to start streaming: <b>12:25</b>",
+            "wrong_date":"Wrong date format, enter again.",
+            "enter_time_end":"Enter the time, when you plan to finish streaming: <b>12:25</b>",
+            "wrong_time":"Wrong time format, enter again.",
+            "re_time_match":"^(([0,1][0-9])|(2[0-3])):[0-5][0-9]$",
+            "written":"Signed!"
+       },
+       "delete":
+       {
+           "name":"delete",
+           "enter_time_delete":"Enter the date in format <b>2021/11/25-12:25</b> of sign, whic you want to delete",
+           "re_date_time_match":"^202[0-9]\/((1[0-2])|(0?[1-9]))\/((1[0-9])|(2[0-9])|(3[0-1])|(0?[0-9]))-(([0,1][0-9])|(2[0-3])):[0-5][0-9]$",
+           "deleted":"Sign is deleted!",
+           "wrong_format":"Wrong format, enter again."
+       },
+       "streams":
+       {
+           "name":"streams"
+       },
+       "today":
+       {
+           "name":"today",
+           "streams_for_today":"Yout streams for today:",
+           "no_streams_for_today":"You have no streams for today!"
+
+       }
+    },
+    "common":
+    {
+        "all_user_data":"All your signs:",
+        "no_data":"You have no active signs!"
+    }
+}
+
