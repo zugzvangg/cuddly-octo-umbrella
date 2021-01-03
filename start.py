@@ -36,7 +36,7 @@ def check_date(message):
     if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
         bot.send_message(message.chat.id, configuration['commands']['new']['check_ok'])
         structure.date = message.text
-        bot.send_message(message.chat.id,configuration['commands']['new']['enter_time'])
+        bot.send_message(message.chat.id,configuration['commands']['new']['enter_time'],parse_mode='html')
         bot.register_next_step_handler(message, check_time_new)
     else:
         bot.send_message(message.chat.id,'Неверный формат даты, введите заново.')
