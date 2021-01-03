@@ -17,26 +17,26 @@ db = SQL(configuration['setup']['database'])
 structure = Structure() 
 
 
-@bot.message_handler(commands = ['start'])
+@bot.message_handler(commands = [configuration['commands']['start']['name']])
 def welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    item1 = types.KeyboardButton("Начать!")
+    item1 = types.KeyboardButton(configuration['commands']['start']["begin_button"])
     markup.add(item1)
-    bot.send_message(message.chat.id, """Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия. Чтобы работать с ботом, вводи команды с помощью <b>/</b>. Удачи!""".format(message.from_user), parse_mode='html', reply_markup=markup)
+    bot.send_message(message.chat.id,configuration['commands']['start']['hello'].format(message.from_user), parse_mode='html', reply_markup=markup)
     structure.usr = message.from_user.first_name
     
 
 
-@bot.message_handler(commands=['new'])
+@bot.message_handler(commands=[configuration['commands']["new"]['name']])
 def date_new(message):
-    bot.send_message(message.chat.id,'Введите дату, когда хотите стримить в формате: <b>2021/11/25</b>', parse_mode='html')
+    bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html')
     bot.register_next_step_handler(message, check_date)
 
 def check_date(message):
-    if re.match(r'^202\d\/((1[0-2])|(0?[1-9]))\/((1[0-9])|(2[0-9])|(3[0-1])|(0?[0-9]))$', message.text):
-        bot.send_message(message.chat.id, 'Ок!')
+    if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
+        bot.send_message(message.chat.id, configuration['commands']['new']['check_ok'])
         structure.date = message.text
-        bot.send_message(message.chat.id,'Введите время, когда хотите стримить в формате: <b>12:25</b>', parse_mode='html')
+        bot.send_message(message.chat.id,configuration['commands']['new']['enter_time'])
         bot.register_next_step_handler(message, check_time_new)
     else:
         bot.send_message(message.chat.id,'Неверный формат даты, введите заново.')
@@ -66,7 +66,7 @@ def check_time_end(message):
         bot.register_next_step_handler(message, check_time_end)
 
 
-@bot.message_handler(commands = ['delete'])
+@bot.message_handler(commands = [configuration['commands']['delete']])
 def delete(message):
     bot.send_message(message.chat.id,'Список ваших записей:')
     ls = db.get_users_streams(message.from_user.first_name)
@@ -93,7 +93,7 @@ def checking_delete(tmp, message):
         bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
 
 
-@bot.message_handler(commands = ['streams'])
+@bot.message_handler(commands = [configuration['commands']['streams']])
 def get_streams(message):
     bot.send_message(message.chat.id,'Список ваших записей:')
     ls = db.get_users_streams(message.from_user.first_name)
@@ -109,7 +109,7 @@ def get_streams(message):
         res+=i[0]+' '+i[1]+'\n'
     bot.send_message(message.chat.id, res)
 
-@bot.message_handler(commands = ['today'])
+@bot.message_handler(commands = [configuration['commands']['today']])
 def today(message):
     bot.send_message(message.chat.id,'Ваши стримы за сегодня:')
     today = datetime.date.today().strftime('%Y/%m/%d')
@@ -125,9 +125,6 @@ def today(message):
     for i in tmp:
         res+=i[0]+'     '+i[1]+'\n'
     bot.send_message(message.chat.id, res)
-
-
-
 
 
 bot.polling(none_stop = True)
