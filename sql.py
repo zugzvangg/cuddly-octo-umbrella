@@ -23,3 +23,7 @@ class SQL:
     def get_today_streams(self, today, streamer):
         with self.connection:
             return self.cursor.execute('SELECT * FROM `streamers` WHERE `date` = ? AND `streamer`=?', (today, streamer)).fetchall()
+    
+    def get_statistics(self, streamer):
+        with self.connection:
+            return self.cursor.execute('SELECT date, begin, end FROM `streamers` WHERE `streamer` = ?', (streamer,)).fetchall()

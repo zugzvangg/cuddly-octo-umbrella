@@ -21,7 +21,11 @@
             "enter_time_end":"Enter the time, when you plan to finish streaming in format: <b>12:25</b>",
             "wrong_time":"Wrong time format, enter again.",
             "re_time_match":"^(([0,1][0-9])|(2[0-3])):[0-5][0-9]$",
-            "written":"Signed!"
+            "written":"Signed!",
+            "inline_today":"today",
+            "inline_tomorrow":"tomorrow",
+            "inline_other":"other",
+            "start_date":"Enter date:"
        },
        "delete":
        {

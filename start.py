@@ -30,27 +30,27 @@ def welcome(message):
 @bot.message_handler(commands=[configuration['commands']["new"]['name']])
 def date_new(message):
     keyboard = types.InlineKeyboardMarkup()
-    today_button = types.InlineKeyboardButton(text="today", callback_data="today")
-    tomorrow_button = types.InlineKeyboardButton(text = "tomorrow", callback_data="tomorrow")
-    other_button = types.InlineKeyboardButton(text = "other", callback_data="other")
+    today_button = types.InlineKeyboardButton(text=configuration['commands']["new"]['inline_today'], callback_data=configuration['commands']["new"]['inline_today'])
+    tomorrow_button = types.InlineKeyboardButton(text = configuration['commands']["new"]['inline_tomorrow'], callback_data=configuration['commands']["new"]['inline_tomorrow'])
+    other_button = types.InlineKeyboardButton(text = configuration['commands']["new"]['inline_other'], callback_data=configuration['commands']["new"]['inline_other'])
     keyboard.add(today_button, tomorrow_button, other_button)
-    bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html', reply_markup=keyboard)
+    bot.send_message(message.chat.id,configuration['commands']['new']['start_date'], parse_mode='html', reply_markup=keyboard)
     
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     if call.message:
-        if call.data == "today":
+        if call.data == configuration['commands']["new"]['inline_today']:
             structure.date = datetime.date.today().strftime('%Y/%m/%d')
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for today!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
-        elif call.data == "tomorrow":
+        elif call.data == configuration['commands']["new"]['inline_tomorrow']:
             structure.date = (datetime.date.today()+datetime.timedelta(days=1)).strftime('%Y/%m/%d')
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
-        elif call.data == "other":
+        elif call.data == configuration['commands']['new']['start_date']:
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_date'], parse_mode='html')
             bot.register_next_step_handler(call.message, check_date)
 
@@ -68,7 +68,7 @@ def check_date(message):
 
 
 def check_time_new(message):
-    if re.match(r'^(([0,1][0-9])|(2[0-3])):[0-5][0-9]$', message.text):
+    if re.match(configuration['commands']["new"]['re_time_match'], message.text):
         bot.send_message(message.chat.id, 'Ок!')
         structure.time_begin = message.text
         bot.send_message(message.chat.id,configuration['commands']['new']['enter_time_end'], parse_mode='html')
@@ -149,6 +149,24 @@ def today(message):
     for i in tmp:
         res+=i[0]+'-'+i[1]+'\n'
     bot.send_message(message.chat.id, res)
+
+@bot.message_handler(commands = ['stat'])
+def statistics(message):
+    ls = db.get_statistics(streamer=message.from_user.first_name)
+    per_month = 0
+    summa = 0
+    for i in ls:
+        #print(datetime.date.today().strftime('%Y/%m/%d').split('/')[1], i[0].split('/')[1])
+        print(datetime.date.today().strftime('%Y/%m/%d').split('/')[1], ":", i[0])
+        if datetime.date.today().strftime('%Y/%m/%d').split('/')[1]==i[0].split('/')[1]: 
+            tmp = datetime.datetime.strptime([1], "%H:M")-datetime.datetime.strptime(i[2], "%H:M")
+            per_month+=tmp.hours
+            summa+=tmp
+    bot.send_message(message.chat.id, "За месяц {}\n. За все время{}".format(per_month, summa))
+
+
+
+    
 
 
 bot.polling(none_stop = True)
