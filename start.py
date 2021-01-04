@@ -34,7 +34,7 @@ def date_new(message):
     tomorrow_button = types.InlineKeyboardButton(text = "tomorrow", callback_data="tomorrow")
     keyboard.add(today_button, tomorrow_button)
     bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html', reply_markup=keyboard)
-    bot.register_next_step_handler(message, check_date)
+    
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
@@ -43,17 +43,16 @@ def callback_inline(call):
             structure.date = datetime.date.today().strftime('%Y/%m/%d')
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for today!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
-            bot.register_next_step_handler(call.message, check_date_inline)
-        if call.data == "tomorrow":
+            bot.register_next_step_handler(call.message, check_time_new)
+        elif call.data == "tomorrow":
             structure.date = (datetime.date.today()+datetime.timedelta(days=1)).strftime('%Y/%m/%d')
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
-            bot.register_next_step_handler(call.message, check_date_inline)
+            bot.register_next_step_handler(call.message, check_time_new)
+        else:
+            bot.send_message(call.message.chat.id, "hi!")
+            bot.register_next_step_handler(call.message, check_date)
 
-def check_date_inline(message):
-    bot.send_message(message.chat.id,"check",parse_mode='html')
-    bot.register_next_step_handler(message, check_time_new)
-    
 
 
 def check_date(message):
