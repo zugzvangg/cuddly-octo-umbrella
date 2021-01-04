@@ -72,14 +72,14 @@ def delete(message):
     ls = db.get_users_streams(message.from_user.first_name)
     tmp = []
     for i in ls:
-        tmp.append((i[1], i[2]))
+        tmp.append((i[2], i[3]))
     if len(tmp)==0:
         bot.send_message(message.chat.id, configuration['common']['no_data'])
         return
     res = ""
     res+='Date             Time\n'
     for i in tmp:
-        res+=i[0]+' '+i[1]+'\n'
+        res+=i[0]+'-'+i[1]+'\n'
     bot.send_message(message.chat.id, res)
     bot.send_message(message.chat.id,configuration['commands']['delete']['enter_time_delete'],parse_mode='html')
     bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
@@ -99,14 +99,14 @@ def get_streams(message):
     ls = db.get_users_streams(message.from_user.first_name)
     tmp = []
     for i in ls:
-        tmp.append((i[1], i[2]))
+        tmp.append((i[2], i[3]))
     if len(tmp)==0:
         bot.send_message(message.chat.id, configuration['common']['no_data'])
         return
     res = ""
     res+='Date             Time\n'
     for i in tmp:
-        res+=i[0]+' '+i[1]+'\n'
+        res+=i[0]+'-'+i[1]+'\n'
     bot.send_message(message.chat.id, res)
 
 @bot.message_handler(commands = [configuration['commands']['today']['name']])
@@ -123,7 +123,7 @@ def today(message):
     res = ""
     res+='Begin      End\n'
     for i in tmp:
-        res+=i[0]+'     '+i[1]+'\n'
+        res+=i[0]+'-'+i[1]+'\n'
     bot.send_message(message.chat.id, res)
 
 
