@@ -32,7 +32,8 @@ def date_new(message):
     keyboard = types.InlineKeyboardMarkup()
     today_button = types.InlineKeyboardButton(text="today", callback_data="today")
     tomorrow_button = types.InlineKeyboardButton(text = "tomorrow", callback_data="tomorrow")
-    keyboard.add(today_button, tomorrow_button)
+    other_button = types.InlineKeyboardButton(text = "other", callback_data="other")
+    keyboard.add(today_button, tomorrow_button, other_button)
     bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html', reply_markup=keyboard)
     
 
@@ -49,8 +50,8 @@ def callback_inline(call):
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
-        else:
-            bot.send_message(call.message.chat.id, "hi!")
+        elif call.data == "other":
+            bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_date'], parse_mode='html')
             bot.register_next_step_handler(call.message, check_date)
 
 
