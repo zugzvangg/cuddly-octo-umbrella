@@ -29,8 +29,32 @@ def welcome(message):
 
 @bot.message_handler(commands=[configuration['commands']["new"]['name']])
 def date_new(message):
-    bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html')
+    keyboard = types.InlineKeyboardMarkup()
+    today_button = types.InlineKeyboardButton(text="today", callback_data="today")
+    tomorrow_button = types.InlineKeyboardButton(text = "tomorrow", callback_data="tomorrow")
+    keyboard.add(today_button, tomorrow_button)
+    bot.send_message(message.chat.id,configuration['commands']['new']['enter_date'], parse_mode='html', reply_markup=keyboard)
     bot.register_next_step_handler(message, check_date)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    if call.message:
+        if call.data == "today":
+            structure.date = datetime.date.today().strftime('%Y/%m/%d')
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for today!", parse_mode="html")
+            bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
+            bot.register_next_step_handler(call.message, check_date_inline)
+        if call.data == "tomorrow":
+            structure.date = (datetime.date.today()+datetime.timedelta(days=1)).strftime('%Y/%m/%d')
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
+            bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
+            bot.register_next_step_handler(call.message, check_date_inline)
+
+def check_date_inline(message):
+    bot.send_message(message.chat.id,"check",parse_mode='html')
+    bot.register_next_step_handler(message, check_time_new)
+    
+
 
 def check_date(message):
     if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
