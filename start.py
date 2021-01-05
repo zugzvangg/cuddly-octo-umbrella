@@ -50,7 +50,7 @@ def callback_inline(call):
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
-        elif call.data == configuration['commands']['new']['start_date']:
+        elif call.data == configuration['commands']['new']['inline_other']:
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_date'], parse_mode='html')
             bot.register_next_step_handler(call.message, check_date)
 
@@ -162,7 +162,7 @@ def statistics(message):
         if datetime.date.today().strftime('%Y/%m/%d').split('/')[1]==i[0].split('/')[1]: 
             per_month+=abs(float(tmp.seconds)/3600)
         summa+=abs(float(tmp.seconds/3600))
-    bot.send_message(message.chat.id, "Статистика <b>{}</b>.\n За месяц: {} часов.\n За все время {} часов.".format(message.from_user.first_name, int(per_month), int(summa)), parse_mode='html')
+    bot.send_message(message.chat.id, configuration['commands']['stat']['pattern'].format(message.from_user.first_name, int(per_month), int(summa)), parse_mode='html')
 
 
 

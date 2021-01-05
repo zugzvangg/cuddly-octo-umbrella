@@ -45,6 +45,11 @@
            "streams_for_today":"Yout streams for today:",
            "no_streams_for_today":"You have no streams for today!"
 
+       },
+       "stat":
+       {
+           "name":"stat",
+           "pattern":"Статистика <b>{}</b>.\n За месяц: {} часов.\n За все время {} часов."
        }
     },
     "common":
