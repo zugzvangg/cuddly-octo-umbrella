@@ -156,17 +156,15 @@ def statistics(message):
     per_month = 0
     summa = 0
     for i in ls:
-        #print(datetime.date.today().strftime('%Y/%m/%d').split('/')[1], i[0].split('/')[1])
-        print(datetime.date.today().strftime('%Y/%m/%d').split('/')[1], ":", i[0])
+        print(datetime.datetime.strptime(i[2], "%H:%M"), datetime.datetime.strptime(i[1], "%H:%M"))
+        tmp = datetime.datetime.strptime(i[2], "%H:%M")-datetime.datetime.strptime(i[1], "%H:%M")
+        print(tmp)
         if datetime.date.today().strftime('%Y/%m/%d').split('/')[1]==i[0].split('/')[1]: 
-            tmp = datetime.datetime.strptime([1], "%H:M")-datetime.datetime.strptime(i[2], "%H:M")
-            per_month+=tmp.hours
-            summa+=tmp
-    bot.send_message(message.chat.id, "За месяц {}\n. За все время{}".format(per_month, summa))
+            per_month+=abs(float(tmp.seconds)/3600)
+        summa+=abs(float(tmp.seconds/3600))
+    bot.send_message(message.chat.id, "Статистика <b>{}</b>.\n За месяц: {} часов.\n За все время {} часов.".format(message.from_user.first_name, int(per_month), int(summa)), parse_mode='html')
 
 
-
-    
 
 
 bot.polling(none_stop = True)
