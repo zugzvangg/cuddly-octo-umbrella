@@ -43,14 +43,14 @@
        "today":
        {
            "name":"today",
-           "streams_for_today":"Yout streams for today:",
+           "streams_for_today":"Your streams for today:",
            "no_streams_for_today":"You have no streams for today!"
 
        },
        "stat":
        {
            "name":"stat",
-           "pattern":"Статистика <b>{}</b>.\n За месяц: {} часов.\n За все время {} часов."
+           "pattern":"Statistics <b>{}</b>.\n For month: {} hours.\n All time {} hours."
        }
     },
     "common":
