@@ -1,4 +1,5 @@
 import sqlite3
+from time import strptime
 import telebot
 import config
 from telebot import types
@@ -80,11 +81,15 @@ def check_time_new(message):
 
 def check_time_end(message):
     if re.match(re.compile(configuration['commands']["new"]['re_time_match']), message.text):
-        bot.send_message(message.chat.id, configuration['commands']["new"]["check_ok"])
-        structure.time_end = message.text
-        print(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
-        db.add(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
-        bot.send_message(message.chat.id, configuration['commands']["new"]["written"])
+        if datetime.datetime.strptime(message.text, "%H:%M") > datetime.datetime.strptime(structure.time_begin, "%H:%M"):
+            bot.send_message(message.chat.id, configuration['commands']["new"]["check_ok"])
+            structure.time_end = message.text
+            print(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
+            db.add(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
+            bot.send_message(message.chat.id, configuration['commands']["new"]["written"])
+        else:
+            bot.send_message(message.chat.id, configuration['commands']["new"]["cant_be_later"])
+            bot.register_next_step_handler(message, check_time_end)
     else:
         bot.send_message(message.chat.id,configuration['commands']['new']['wrong_time'])
         bot.register_next_step_handler(message, check_time_end)

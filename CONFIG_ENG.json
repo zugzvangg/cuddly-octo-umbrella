@@ -25,7 +25,8 @@
             "inline_today":"today",
             "inline_tomorrow":"tomorrow",
             "inline_other":"other",
-            "start_date":"Enter date:"
+            "start_date":"Enter date:",
+            "cant_be_later":"End time can't be later, than begin!\nEnter right time:"
        },
        "delete":
        {
