@@ -128,10 +128,13 @@ def get_streams(message):
     ls = db.get_users_streams(message.from_user.first_name)
     tmp = []
     for i in ls:
-        tmp.append((i[2], i[3]))
+    
+        if datetime.date.today()<=datetime.date(int(i[2].split('/')[0]), int(i[2].split('/')[1]), int(i[2].split('/')[2])):
+            tmp.append((i[2], i[3]))
     if len(tmp)==0:
         bot.send_message(message.chat.id, configuration['common']['no_data'])
         return
+    print(tmp)
     res = ""
     res+='Date             Time\n'
     for i in tmp:
