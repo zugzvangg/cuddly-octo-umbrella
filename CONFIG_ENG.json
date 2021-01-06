@@ -1,6 +1,15 @@
 {"setup":
     {
-        "database": "streamers"
+        "database": "streamers",
+        "lang":"Choose bot language:",
+        "start":"Choose language:",
+        "languages":
+        {
+            "RUS":"RUS",
+            "RUS_CONFIG":"CONFIG_RUS.json",
+            "ENG":"ENG",
+            "ENG_CONFIG":"CONFIG_ENG.json"        
+        }
     },
    "commands":
    {

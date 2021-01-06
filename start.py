@@ -10,7 +10,7 @@ import re
 from Structure import Structure
 import json
 
-conf = 'CONFIG_ENG.json'
+conf = 'CONFIG_RUS.json'
 with open(conf) as jf:
     configuration = json.load(jf)
 bot = telebot.TeleBot(config.TOKEN)
@@ -145,14 +145,14 @@ def today(message):
     ls = db.get_today_streams(today, message.from_user.first_name)
     tmp = []
     for i in ls:
-        tmp.append((i[2], i[3]))
+        tmp.append((i[3], i[4]))
     if len(tmp)==0:
         bot.send_message(message.chat.id, configuration['commands']['today']['no_streams_for_today'])
         return
     res = ""
     res+='Begin      End\n'
     for i in tmp:
-        res+=i[0]+'-'+i[1]+'\n'
+        res+=i[0]+'  -  '+i[1]+'\n'
     bot.send_message(message.chat.id, res)
 
 @bot.message_handler(commands = ['stat'])
@@ -171,6 +171,9 @@ def statistics(message):
 
 
 
+@bot.message_handler(commands = ['long'])
+def add_schedule(message):
+    pass
 
 bot.polling(none_stop = True)
 
