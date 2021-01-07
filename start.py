@@ -10,7 +10,7 @@ import re
 from Structure import Structure
 import json
 
-conf = 'CONFIG_RUS.json'
+conf = 'CONFIG_ENG.json'
 with open(conf) as jf:
     configuration = json.load(jf)
 bot = telebot.TeleBot(config.TOKEN)
@@ -43,12 +43,12 @@ def callback_inline(call):
     if call.message:
         if call.data == configuration['commands']["new"]['inline_today']:
             structure.date = datetime.date.today().strftime('%Y/%m/%d')
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for today!", parse_mode="html")
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=configuration['commands']["new"]['reg_for_tod'], parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
         elif call.data == configuration['commands']["new"]['inline_tomorrow']:
             structure.date = (datetime.date.today()+datetime.timedelta(days=1)).strftime('%Y/%m/%d')
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Registred time for tomorrow!", parse_mode="html")
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=configuration['commands']["new"]['reg_for_tom'], parse_mode="html")
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode = "html")
             bot.register_next_step_handler(call.message, check_time_new)
         elif call.data == configuration['commands']['new']['inline_other']:

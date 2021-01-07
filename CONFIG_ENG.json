@@ -35,7 +35,9 @@
             "inline_tomorrow":"tomorrow",
             "inline_other":"other",
             "start_date":"Enter date:",
-            "cant_be_later":"End time can't be later, than begin!\nEnter right time:"
+            "cant_be_later":"End time can't be later, than begin!\nEnter right time:",
+            "reg_for_tom":"Signed for today!",
+            "reg_for_tod":"Signed for tomorrow!"
        },
        "delete":
        {
