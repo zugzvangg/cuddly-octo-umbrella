@@ -1,4 +1,5 @@
 import sqlite3
+import threading
 from time import strptime
 import telebot
 import config
@@ -13,9 +14,11 @@ import json
 conf = 'CONFIG_ENG.json'
 with open(conf) as jf:
     configuration = json.load(jf)
-bot = telebot.TeleBot(config.TOKEN)
+
 db = SQL(configuration['setup']['database'])
 structure = Structure() 
+
+bot = telebot.TeleBot(config.TOKEN)
 
 
 @bot.message_handler(commands = [configuration['commands']['start']['name']])
@@ -178,5 +181,6 @@ def statistics(message):
 def add_schedule(message):
     pass
 
-bot.polling(none_stop = True)
+bot.polling()
+
 
