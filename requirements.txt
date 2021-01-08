@@ -1,6 +1,25 @@
+astroid==2.4.2
+autopep8==1.5.4
 certifi==2020.12.5
 chardet==4.0.0
+Cython==0.29.21
+gunicorn==20.0.4
 idna==2.10
+isort==5.6.4
+lazy-object-proxy==1.4.3
+Mako==1.1.3.dev0
+Markdown @ file:///buildstream/freedesktop-sdk/components/python3-markdown.bst
+mccabe==0.6.1
+meson @ file:///buildstream/freedesktop-sdk/components/meson.bst
+mpmath==1.1.0
+numpy==1.19.4
+pycodestyle==2.6.0
+Pygments==2.7.3.dev20201226
+pylint==2.6.0
+pyTelegramBotAPI==3.7.4
 requests==2.25.1
+six==1.15.0
+sympy==1.6.2
+toml==0.10.2
 urllib3==1.26.2
-pyTelegramBotAPI  == 3.7.4
+wrapt==1.12.1
