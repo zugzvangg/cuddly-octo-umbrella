@@ -1,1 +1,1 @@
-TOKEN = 'Ага, чтоб у меня его Боба подрезал. Держи в курсе'
+TOKEN = '1442021971:AAHI5eVcI4IrREBuf-yEbMxrkyqU25mrAig'
