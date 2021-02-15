@@ -23,16 +23,18 @@ bot = telebot.TeleBot(config.TOKEN)
 
 @bot.message_handler(commands=[configuration['commands']['discipline']['name']])
 def set_discipline(message):
-    bot.send_message(
-        message.chat.id, configuration['commands']['discipline']['choose'])
     keyboard = types.InlineKeyboardMarkup()
     dota2 = types.InlineKeyboardButton(
         text=configuration['commands']["discipline"]['dota2'], callback_data=configuration['commands']["discipline"]['inline_dota'])
     csgo = types.InlineKeyboardButton(
         text=configuration['commands']["discipline"]['csgo'], callback_data=configuration['commands']["discipline"]['inline_cs'])
     keyboard.add(dota2, csgo)
-    bot.send_message(message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html', reply_markup=keyboard)
+    bot.send_message(message.chat.id, configuration['commands']['discipline']['choose'], parse_mode='html', reply_markup=keyboard)
     
+    
+
+
+        
 
 @bot.message_handler(commands = [configuration['commands']['start']['name']])
 def welcome(message):
@@ -43,16 +45,6 @@ def welcome(message):
     structure.usr = message.from_user.first_name
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_discipline(call):
-    if call.message:
-        if call.data == configuration['commands']["discipline"]['inline_dota']:
-            db.change_discipline(call.message.from_user.username,
-                configuration['commands']["discipline"]['dota2'])
-        elif call.data == configuration['commands']["discipline"]['inline_cs']:
-            db.change_discipline(call.message.from_user.username,
-                configuration['commands']["discipline"]['csgo'])
-            
 
 
 @bot.message_handler(commands=[configuration['commands']["new"]['name']])
@@ -81,6 +73,14 @@ def callback_inline(call):
         elif call.data == configuration['commands']['new']['inline_other']:
             bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_date'], parse_mode='html')
             bot.register_next_step_handler(call.message, check_date)
+        elif call.data == configuration['commands']["discipline"]['inline_dota']:
+            db.change_discipline(call.message.chat.username,configuration['commands']["discipline"]['dota2'])
+            bot.send_message(
+                call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
+        if call.data == configuration['commands']["discipline"]['inline_cs']:
+            db.change_discipline(
+                call.message.chat.username, configuration['commands']["discipline"]['csgo'])
+            bot.send_message(call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
 
 
 
@@ -111,8 +111,9 @@ def check_time_end(message):
         if datetime.datetime.strptime(message.text, "%H:%M") > datetime.datetime.strptime(structure.time_begin, "%H:%M"):
             bot.send_message(message.chat.id, configuration['commands']["new"]["check_ok"])
             structure.time_end = message.text
-            print(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
-            db.add(message.from_user.first_name, structure.date,structure.time_begin, structure.time_end)
+            print(message.chat.username, structure.date,
+                structure.time_begin, structure.time_end)
+            db.add(message.chat.username, structure.date,structure.time_begin, structure.time_end)
             bot.send_message(message.chat.id, configuration['commands']["new"]["written"])
         else:
             bot.send_message(message.chat.id, configuration['commands']["new"]["cant_be_later"])
@@ -125,7 +126,7 @@ def check_time_end(message):
 @bot.message_handler(commands = [configuration['commands']['delete']['name']])
 def delete(message):
     bot.send_message(message.chat.id,configuration['common']['all_user_data'])
-    ls = db.get_users_streams(message.from_user.first_name)
+    ls = db.get_users_streams(message.chat.username)
     tmp = []
     for i in ls:
         tmp.append((i[2], i[3]))
@@ -142,7 +143,8 @@ def delete(message):
 
 def checking_delete(tmp, message):
     if re.match(re.compile(configuration['commands']['delete']['re_date_time_match']), message.text):
-        db.delete(message.from_user.first_name,message.text.split('-')[0], message.text.split('-')[1])
+        db.delete(message.chat.username, message.text.split(
+            '-')[0], message.text.split('-')[1])
         bot.send_message(message.chat.id, configuration['commands']['delete']['deleted'])
     else:
         bot.send_message(message.chat.id,configuration['commands']['delete']['wrong_format'])
@@ -152,7 +154,7 @@ def checking_delete(tmp, message):
 @bot.message_handler(commands = [configuration['commands']['streams']['name']])
 def get_streams(message):
     bot.send_message(message.chat.id,configuration['common']['all_user_data'])
-    ls = db.get_users_streams(message.from_user.first_name)
+    ls = db.get_users_streams(message.chat.username)
     tmp = []
     for i in ls:
     
@@ -172,7 +174,7 @@ def get_streams(message):
 def today(message):
     bot.send_message(message.chat.id,configuration['commands']['today']['streams_for_today'])
     today = datetime.date.today().strftime('%Y/%m/%d')
-    ls = db.get_today_streams(today, message.from_user.first_name)
+    ls = db.get_today_streams(today, message.chat.username)
     tmp = []
     for i in ls:
         tmp.append((i[3], i[4]))
@@ -187,7 +189,7 @@ def today(message):
 
 @bot.message_handler(commands = ['stat'])
 def statistics(message):
-    ls = db.get_statistics(streamer=message.from_user.first_name)
+    ls = db.get_statistics(streamer=message.chat.username)
     per_month = 0
     summa = 0
     for i in ls:
