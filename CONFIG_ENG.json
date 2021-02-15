@@ -19,6 +19,16 @@
            "begin_button":"Start!",
            "hello":"Hello, <b>{0.first_name}</b>!\n This bot is created to organize the process of streaming in out project. Here you can sign, when you start streaming and some other moves. To start work, enter the commands using <b>/</b>. Good luck!"
        },
+    "discipline":
+    {
+        "name": "discipline",
+        "choose":"Choose the discipline:",
+        "dota2":"Dota 2",
+        "csgo":"CS:GO",
+        "inline_dota":"dota2",
+        "inline_cs":"inline_cs",
+        "discipline_signed":"Your discipline is signed!"
+    },
        "new":
        {
             "name":"new",

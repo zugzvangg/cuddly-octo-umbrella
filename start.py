@@ -21,6 +21,19 @@ structure = Structure()
 bot = telebot.TeleBot(config.TOKEN)
 
 
+@bot.message_handler(commands=[configuration['commands']['discipline']['name']])
+def set_discipline(message):
+    bot.send_message(
+        message.chat.id, configuration['commands']['discipline']['choose'])
+    keyboard = types.InlineKeyboardMarkup()
+    dota2 = types.InlineKeyboardButton(
+        text=configuration['commands']["discipline"]['dota2'], callback_data=configuration['commands']["discipline"]['inline_dota'])
+    csgo = types.InlineKeyboardButton(
+        text=configuration['commands']["discipline"]['csgo'], callback_data=configuration['commands']["discipline"]['inline_cs'])
+    keyboard.add(dota2, csgo)
+    bot.send_message(message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html', reply_markup=keyboard)
+    
+
 @bot.message_handler(commands = [configuration['commands']['start']['name']])
 def welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -28,7 +41,18 @@ def welcome(message):
     markup.add(item1)
     bot.send_message(message.chat.id,configuration['commands']['start']['hello'].format(message.from_user), parse_mode='html', reply_markup=markup)
     structure.usr = message.from_user.first_name
-    
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_discipline(call):
+    if call.message:
+        if call.data == configuration['commands']["discipline"]['inline_dota']:
+            db.change_discipline(call.message.from_user.username,
+                configuration['commands']["discipline"]['dota2'])
+        elif call.data == configuration['commands']["discipline"]['inline_cs']:
+            db.change_discipline(call.message.from_user.username,
+                configuration['commands']["discipline"]['csgo'])
+            
 
 
 @bot.message_handler(commands=[configuration['commands']["new"]['name']])

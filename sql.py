@@ -27,3 +27,11 @@ class SQL:
     def get_statistics(self, streamer):
         with self.connection:
             return self.cursor.execute('SELECT date, begin, end FROM `signs` WHERE `streamer` = ?', (streamer,)).fetchall()
+
+    def change_discipline(self, streamer, discipline):
+        with self.connection:
+            ls = self.cursor.execute('SELECT name FROM `disciplines` WHERE `name` = ?', (streamer,)).fetchall()
+            if len(ls)==0:
+                return self.cursor.execute("INSERT INTO `disciplines` (`name`, `discipline`) VALUES (?,?)", (streamer, discipline))
+            else:
+                return self.cursor.execute("UPDATE `disciplines` SET `discipline` = ? WHERE `name` = ?", (discipline, streamer,)).fetchall()
