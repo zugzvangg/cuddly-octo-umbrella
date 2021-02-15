@@ -81,7 +81,8 @@
            "month":"Register for month",
            "call_month":"month",
            "choose_pattern":"Choose the time interval for which you want to register:",
-           "choose_days_of_week": "Choose the days of week on which You are going to stream on the next week:"
+           "choose_days_of_week": "Choose the days of week on which You are going to stream on the next week:",
+           "time_beg_table":"Enter time which you want to stream in the chosen day in format <b>12:25</b>"
        }
     },
     "common":

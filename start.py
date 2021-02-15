@@ -35,8 +35,6 @@ def set_discipline(message):
     
 
 
-        
-
 @bot.message_handler(commands = [configuration['commands']['start']['name']])
 def welcome(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -82,13 +80,14 @@ def callback_inline(call):
             db.change_discipline(
                 call.message.chat.username, configuration['commands']["discipline"]['csgo'])
             bot.send_message(call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
+        elif call.data in ['0', '1', '2', '3', '4', '5', '6']:
+            my_date = datetime.date.today()
+            tmp = ((my_date+datetime.timedelta(int(call.data)+1),
+                    calendar.day_name[(my_date+datetime.timedelta(int(call.data)+1)).weekday()]))
+            bot.send_message(call.message.chat.id,configuration['commands']['new']['enter_time_beg'], parse_mode = 'html')
+            structure.date = tmp[0].strftime("%Y/%m/%d")
+            bot.register_next_step_handler(call.message, check_time_new)
 
-
-def for_week():
-    pass
-
-def for_month():
-    pass
 
 
 def check_date(message):
@@ -212,13 +211,24 @@ def statistics(message):
 
 @bot.message_handler(commands = ['timetable'])
 def add_schedule(message):
-    bot.send_message(
-        message.chat.id, configuration['commands']['timetable']['choose_days_of_week'], parse_mode='html')
+    #bot.send_message(
+        #message.chat.id, configuration['commands']['timetable']['choose_days_of_week'], parse_mode='html')
     my_date = datetime.date.today()
     ls = []
     for i in range(1, 8):
         ls.append((my_date+datetime.timedelta(i),calendar.day_name[(my_date+datetime.timedelta(i)).weekday()]))
-    print(ls)
+    buttons = []
+    for i in range(len(ls)):
+        button = types.InlineKeyboardButton(
+            text=ls[i][0].strftime("%m/%d/%Y")+"\n"+ls[i][1] , callback_data=str(i))
+        buttons.append(button)
+    keyboard = types.InlineKeyboardMarkup([[button] for button in buttons])
+    bot.send_message(message.chat.id, configuration['commands']['timetable']['choose_days_of_week'], reply_markup=keyboard)
+
+
+def process_step(message):
+    pass
+
 
 bot.polling()
 
