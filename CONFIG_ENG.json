@@ -72,6 +72,15 @@
        {
            "name":"stat",
            "pattern":"Statistics <b>{}</b>.\n For month: {} hours.\n All time {} hours."
+       },
+       "timetable":
+       {
+           "name":"timetable",
+           "week":"Register for week",
+           "call_week":"week",
+           "month":"Register for month",
+           "call_month":"month",
+           "choose_pattern":"Choose the time interval for which you want to register:"
        }
     },
     "common":

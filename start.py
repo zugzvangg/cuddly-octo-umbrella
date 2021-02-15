@@ -57,7 +57,7 @@ def date_new(message):
     bot.send_message(message.chat.id,configuration['commands']['new']['start_date'], parse_mode='html', reply_markup=keyboard)
     
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.callback_query_handler(func=lambda call: True) #inline buttons
 def callback_inline(call):
     if call.message:
         if call.data == configuration['commands']["new"]['inline_today']:
@@ -77,12 +77,21 @@ def callback_inline(call):
             db.change_discipline(call.message.chat.username,configuration['commands']["discipline"]['dota2'])
             bot.send_message(
                 call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
-        if call.data == configuration['commands']["discipline"]['inline_cs']:
+        elif call.data == configuration['commands']["discipline"]['inline_cs']:
             db.change_discipline(
                 call.message.chat.username, configuration['commands']["discipline"]['csgo'])
             bot.send_message(call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
+        elif call.data == configuration['commands']['timetable']['call_week']:
+            bot.register_next_step_handler(call.message, check_time_new)
+        elif call.data ==  configuration['commands']['timetable']['call_month']:
+            bot.register_next_step_handler(call.message, check_time_new)
 
 
+def for_week():
+    pass
+
+def for_month():
+    
 
 def check_date(message):
     if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
@@ -203,9 +212,16 @@ def statistics(message):
 
 
 
-@bot.message_handler(commands = ['long'])
+@bot.message_handler(commands = ['timetable'])
 def add_schedule(message):
-    pass
+    keyboard = types.InlineKeyboardMarkup()
+    for_week = types.InlineKeyboardButton(
+        text=configuration['commands']["timetable"]['week'], callback_data=configuration['commands']["timetable"]['call_week'])
+    for_month = types.InlineKeyboardButton(
+        text=configuration['commands']["timetable"]['month'], callback_data=configuration['commands']["timetable"]['call_month'])
+    keyboard.add(for_week, for_month)
+    bot.send_message(message.chat.id, configuration['commands']['timetable']['choose_pattern'], parse_mode='html', reply_markup=keyboard)
+
 
 bot.polling()
 
