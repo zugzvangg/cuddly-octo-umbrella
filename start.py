@@ -1,14 +1,14 @@
 import sqlite3
 import threading
 from time import strptime
-import telebot
+from Structure import Structure
+from sql import SQL
 import config
+import telebot
 from telebot import types
 import random
-from sql import SQL
 import datetime
 import re
-from Structure import Structure
 import json
 
 conf = 'CONFIG_ENG.json'

@@ -1,6 +1,6 @@
 {"setup":
     {
-        "database": "streamers"
+        "database": "streamers.db"
     },
    "commands":
    {

@@ -1,6 +1,6 @@
 {"setup":
     {
-        "database": "streamers",
+        "database": "streamers.db",
         "lang":"Choose bot language:",
         "start":"Choose language:",
         "languages":

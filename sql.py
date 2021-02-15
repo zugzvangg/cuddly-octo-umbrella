@@ -7,23 +7,23 @@ class SQL:
     
     def add(self, streamer, date, begin, end):
         with self.connection:
-            return self.cursor.execute("INSERT INTO `streamers` (`streamer`, `date`, `begin`, `end`) VALUES (?,?,?,?)", (streamer, date, begin, end))
+            return self.cursor.execute("INSERT INTO `signs` (`streamer`, `date`, `begin`, `end`) VALUES (?,?,?,?)", (streamer, date, begin, end))
     
     def delete(self, streamer, date, begin):
         with self.connection:
-            return self.cursor.execute("DELETE FROM `streamers` WHERE `streamer`=?  AND `date`=? AND `begin`=?", (streamer, date, begin,))
+            return self.cursor.execute("DELETE FROM `signs` WHERE `streamer`=?  AND `date`=? AND `begin`=?", (streamer, date, begin,))
 
     def get_users_streams(self, streamer):
         with self.connection:
-            return self.cursor.execute('SELECT * FROM `streamers` WHERE `streamer` = ?', (streamer,)).fetchall()
+            return self.cursor.execute('SELECT * FROM `signs` WHERE `streamer` = ?', (streamer,)).fetchall()
 
     def close(self):
         self.connection.close()
 
     def get_today_streams(self, today, streamer):
         with self.connection:
-            return self.cursor.execute('SELECT * FROM `streamers` WHERE `date` = ? AND `streamer`=?', (today, streamer)).fetchall()
+            return self.cursor.execute('SELECT * FROM `signs` WHERE `date` = ? AND `streamer`=?', (today, streamer)).fetchall()
     
     def get_statistics(self, streamer):
         with self.connection:
-            return self.cursor.execute('SELECT date, begin, end FROM `streamers` WHERE `streamer` = ?', (streamer,)).fetchall()
+            return self.cursor.execute('SELECT date, begin, end FROM `signs` WHERE `streamer` = ?', (streamer,)).fetchall()
