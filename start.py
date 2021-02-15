@@ -12,7 +12,10 @@ import datetime
 import re
 import json
 
-conf = 'CONFIG_ENG.json'
+#TODO system of first registration 
+# TODO other features
+
+conf = 'CONFIG_RUS.json'
 with open(conf) as jf:
     configuration = json.load(jf)
 
