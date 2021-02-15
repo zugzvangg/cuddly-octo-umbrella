@@ -1,6 +1,13 @@
-{"setup":
-    {
-        "database": "streamers.db"
+{"setup": {
+        "database": "streamers.db",
+        "lang": "Choose bot language:",
+        "start": "Choose language:",
+        "languages": {
+            "RUS": "RUS",
+            "RUS_CONFIG": "CONFIG_RUS.json",
+            "ENG": "ENG",
+            "ENG_CONFIG": "CONFIG_ENG.json"
+        }
     },
    "commands":
    {
@@ -10,6 +17,15 @@
            "begin_button":"Начать!",
            "hello":"Приветствую, <b>{0.first_name}</b>!\n Это бот, созданный для организации процесса стриминга в нашем проекте. Здесь ты можешь отмечать время, когда ты будешь стримить, а так же выполнять некоторые другие действия. Чтобы работать с ботом, вводи команды с помощью <b>/</b>. Удачи!"
        },
+       "discipline": {
+        "name": "discipline",
+        "choose": "Выберите дисциплину:",
+        "dota2": "Dota 2",
+        "csgo": "CS:GO",
+        "inline_dota": "dota2",
+        "inline_cs": "inline_cs",
+        "discipline_signed": "Вы выбрали дисциплину!!"
+    },
        "new":
        {
             "name":"new",
@@ -53,7 +69,17 @@
        {
            "name":"stat",
            "pattern":"Статистика <b>{}</b>.\n За месяц: {} часов.\n За все время {} часов."
-       }
+       },
+       "timetable": {
+        "name": "timetable",
+        "week": "Регистрация на неделю",
+        "call_week": "week",
+        "month": "Регистрация на месяц",
+        "call_month": "month",
+        "choose_pattern": "Выберите интервал, на который вы хотите зарегистрироваться:",
+        "choose_days_of_week": "Выберите дни, в которые вы хотите стримить на следующей неделе:",
+        "time_beg_table": "Выберите дни, в которые вы хотите стримить в формате: <b>12:25</b>"
+        }
     },
     "common":
     {

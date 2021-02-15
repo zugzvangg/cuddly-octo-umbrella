@@ -1,10 +1,8 @@
-{"setup":
-    {
+{"setup":{
         "database": "streamers.db",
         "lang":"Choose bot language:",
         "start":"Choose language:",
-        "languages":
-        {
+        "languages":{
             "RUS":"RUS",
             "RUS_CONFIG":"CONFIG_RUS.json",
             "ENG":"ENG",
@@ -19,8 +17,7 @@
            "begin_button":"Start!",
            "hello":"Hello, <b>{0.first_name}</b>!\n This bot is created to organize the process of streaming in out project. Here you can sign, when you start streaming and some other moves. To start work, enter the commands using <b>/</b>. Good luck!"
        },
-    "discipline":
-    {
+    "discipline":{
         "name": "discipline",
         "choose":"Choose the discipline:",
         "dota2":"Dota 2",
@@ -73,8 +70,7 @@
            "name":"stat",
            "pattern":"Statistics <b>{}</b>.\n For month: {} hours.\n All time {} hours."
        },
-       "timetable":
-       {
+       "timetable":{
            "name":"timetable",
            "week":"Register for week",
            "call_week":"week",
