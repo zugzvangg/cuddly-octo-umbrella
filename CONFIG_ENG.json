@@ -80,7 +80,8 @@
            "call_week":"week",
            "month":"Register for month",
            "call_month":"month",
-           "choose_pattern":"Choose the time interval for which you want to register:"
+           "choose_pattern":"Choose the time interval for which you want to register:",
+           "choose_days_of_week": "Choose the days of week on which You are going to stream on the next week:"
        }
     },
     "common":

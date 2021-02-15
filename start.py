@@ -7,6 +7,7 @@ import config
 import telebot
 from telebot import types
 import random
+import calendar
 import datetime
 import re
 import json
@@ -81,17 +82,14 @@ def callback_inline(call):
             db.change_discipline(
                 call.message.chat.username, configuration['commands']["discipline"]['csgo'])
             bot.send_message(call.message.chat.id, configuration['commands']['discipline']['discipline_signed'], parse_mode='html')
-        elif call.data == configuration['commands']['timetable']['call_week']:
-            bot.register_next_step_handler(call.message, check_time_new)
-        elif call.data ==  configuration['commands']['timetable']['call_month']:
-            bot.register_next_step_handler(call.message, check_time_new)
 
 
 def for_week():
     pass
 
 def for_month():
-    
+    pass
+
 
 def check_date(message):
     if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
@@ -214,14 +212,13 @@ def statistics(message):
 
 @bot.message_handler(commands = ['timetable'])
 def add_schedule(message):
-    keyboard = types.InlineKeyboardMarkup()
-    for_week = types.InlineKeyboardButton(
-        text=configuration['commands']["timetable"]['week'], callback_data=configuration['commands']["timetable"]['call_week'])
-    for_month = types.InlineKeyboardButton(
-        text=configuration['commands']["timetable"]['month'], callback_data=configuration['commands']["timetable"]['call_month'])
-    keyboard.add(for_week, for_month)
-    bot.send_message(message.chat.id, configuration['commands']['timetable']['choose_pattern'], parse_mode='html', reply_markup=keyboard)
-
+    bot.send_message(
+        message.chat.id, configuration['commands']['timetable']['choose_days_of_week'], parse_mode='html')
+    my_date = datetime.date.today()
+    ls = []
+    for i in range(1, 8):
+        ls.append((my_date+datetime.timedelta(i),calendar.day_name[(my_date+datetime.timedelta(i)).weekday()]))
+    print(ls)
 
 bot.polling()
 
