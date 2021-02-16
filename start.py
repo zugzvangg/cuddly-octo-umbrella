@@ -15,7 +15,7 @@ import json
 #TODO system of first registration 
 # TODO other features
 
-conf = 'CONFIG_RUS.json'
+conf = 'CONFIG_ENG.json'
 with open(conf) as jf:
     configuration = json.load(jf)
 
@@ -40,9 +40,12 @@ def set_discipline(message):
 
 @bot.message_handler(commands = [configuration['commands']['start']['name']])
 def welcome(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    item1 = types.KeyboardButton(configuration['commands']['start']["begin_button"])
-    markup.add(item1)
+    markup = types.InlineKeyboardMarkup()
+    dota2 = types.InlineKeyboardButton(
+        text=configuration['commands']["discipline"]['dota2'], callback_data=configuration['commands']["discipline"]['inline_dota'])
+    csgo = types.InlineKeyboardButton(
+        text=configuration['commands']["discipline"]['csgo'], callback_data=configuration['commands']["discipline"]['inline_cs'])
+    markup.add(dota2, csgo)
     bot.send_message(message.chat.id,configuration['commands']['start']['hello'].format(message.from_user), parse_mode='html', reply_markup=markup)
     structure.usr = message.from_user.first_name
 
@@ -214,8 +217,6 @@ def statistics(message):
 
 @bot.message_handler(commands = ['timetable'])
 def add_schedule(message):
-    #bot.send_message(
-        #message.chat.id, configuration['commands']['timetable']['choose_days_of_week'], parse_mode='html')
     my_date = datetime.date.today()
     ls = []
     for i in range(1, 8):

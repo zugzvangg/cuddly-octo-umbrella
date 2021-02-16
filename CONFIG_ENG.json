@@ -14,8 +14,8 @@
        "start":
        {
            "name":"start",
-           "begin_button":"Start!",
-           "hello":"Hello, <b>{0.first_name}</b>!\n This bot is created to organize the process of streaming in out project. Here you can sign, when you start streaming and some other moves. To start work, enter the commands using <b>/</b>. Good luck!"
+           "hello":"Hello, <b>{0.first_name}</b>!\n This bot is created to organize the process of streaming in out project. Here you can sign, when you start streaming and some other moves. To start work, enter the commands using <b>/</b>. Choose your discipline using the buttons below. You can always change it by <b>/discipline</b>. Good luck!"
+
        },
     "discipline":{
         "name": "discipline",
