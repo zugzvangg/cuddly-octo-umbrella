@@ -18,11 +18,21 @@ from aiogram.utils import executor
 import logging
 import os
 from aiogram.types import InputMediaPhoto, KeyboardButton, ReplyKeyboardMarkup
+from aiogram import Dispatcher, types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
 logging.basicConfig(level=logging.WARNING)
 logging.warning('This is a warning message')
 logging.error("Error message!")
 logging.critical("Critical message!")
+
+
+class checkNew(StatesGroup):
+    waiting_for_date = State()
+    waiting_time_begin = State()
+    waiting_for_time_end = State()
+
 
 # TODO other features
 bot = Bot(config.TOKEN)
@@ -66,7 +76,7 @@ while True:
 
 
 
-    @dp.message_handler(commands=[configuration['commands']["new"]['name']])
+    @dp.message_handler(commands=[configuration['commands']["new"]['name']])#new
     async def date_new(message):
         keyboard = types.InlineKeyboardMarkup()
         today_button = types.InlineKeyboardButton(text=configuration['commands']["new"]['inline_today'], callback_data=configuration['commands']["new"]['inline_today'])
@@ -74,6 +84,37 @@ while True:
         other_button = types.InlineKeyboardButton(text = configuration['commands']["new"]['inline_other'], callback_data=configuration['commands']["new"]['inline_other'])
         keyboard.add(today_button, tomorrow_button, other_button)
         await bot.send_message(message.chat.id, configuration['commands']['new']['start_date'], parse_mode='html', reply_markup=keyboard)
+        await checkNew.waiting_for_date.set()
+
+    # checking date for validness and swapping to next step
+    async def check_date(message: types.Message, state: FSMContext):
+        if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
+            await bot.send_message(message.chat.id, configuration['commands']['new']['check_ok'])
+            structure.date = message.text
+            await bot.send_message(message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode='html')
+            await checkNew.waiting_time_begin.set()
+            #await bot.register_next_step_handler(message, check_time_new)
+            #check_time_new(message)
+        else:
+            await bot.send_message(message.chat.id, configuration['commands']['new']['wrong_date'])
+            await checkNew.waiting_for_date.set()
+            #check_date(message)
+            #await bot.register_next_step_handler(message, check_date)
+
+    async def check_time_new(message):
+        if re.match(configuration['commands']["new"]['re_time_match'], message.text):
+            await bot.send_message(message.chat.id, 'Ок!')
+            structure.time_begin = message.text
+            await bot.send_message(message.chat.id, configuration['commands']['new']['enter_time_end'], parse_mode='html')
+            #await bot.register_next_step_handler(message, check_time_end)
+            check_time_end(message)
+        else:
+            await bot.send_message(message.chat.id, configuration['commands']['new']['wrong_time'])
+            check_time_new(message)
+            #await bot.register_next_step_handler(message, check_time_new)
+
+            
+
         
     @dp.callback_query_handler(lambda call: True)  # inline buttons
     async def callback_inline(call):
@@ -82,15 +123,18 @@ while True:
                 structure.date = datetime.date.today().strftime('%Y/%m/%d')
                 await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=configuration['commands']["new"]['reg_for_tod'], parse_mode="html")
                 await bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode="html")
-                await bot.register_next_step_handler(call.message, check_time_new)
+                #await bot.register_next_step_handler(call.message, check_time_new)
+                check_time_new(call.message)
             elif call.data == configuration['commands']["new"]['inline_tomorrow']:
                 structure.date = (datetime.date.today()+datetime.timedelta(days=1)).strftime('%Y/%m/%d')
                 await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=configuration['commands']["new"]['reg_for_tom'], parse_mode="html")
                 await bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode="html")
-                await bot.register_next_step_handler(call.message, check_time_new)
+                #await bot.register_next_step_handler(call.message, check_time_new)
+                check_time_new(call.message)
             elif call.data == configuration['commands']['new']['inline_other']:
                 await bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_date'], parse_mode='html')
-                await bot.register_next_step_handler(call.message, check_date)
+                #await bot.register_next_step_handler(call.message, check_date)
+                #check_date(call.message)
             elif call.data == configuration['commands']["discipline"]['inline_dota']:
                 db.change_discipline(call.message.chat.username,configuration['commands']["discipline"]['dota2'])
                 await bot.send_message(
@@ -105,28 +149,13 @@ while True:
                         calendar.day_name[(my_date+datetime.timedelta(int(call.data)+1)).weekday()]))
                 await bot.send_message(call.message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode='html')
                 structure.date = tmp[0].strftime("%Y/%m/%d")
-                await bot.register_next_step_handler(call.message, check_time_new)
+                #await bot.register_next_step_handler(call.message, check_time_new)
+                check_time_new(call.message)
 
 
-    async def check_date(message):
-        if re.match(re.compile(configuration['commands']["new"]['re_date_match']), message.text):
-            await bot.send_message(message.chat.id, configuration['commands']['new']['check_ok'])
-            structure.date = message.text
-            await bot.send_message(message.chat.id, configuration['commands']['new']['enter_time_beg'], parse_mode='html')
-            await bot.register_next_step_handler(message, check_time_new)
-        else:
-            await bot.send_message(message.chat.id, configuration['commands']['new']['wrong_date'])
-            await bot.register_next_step_handler(message, check_date)
 
-    async def check_time_new(message):
-        if re.match(configuration['commands']["new"]['re_time_match'], message.text):
-            await bot.send_message(message.chat.id, 'Ок!')
-            structure.time_begin = message.text
-            await bot.send_message(message.chat.id, configuration['commands']['new']['enter_time_end'], parse_mode='html')
-            await bot.register_next_step_handler(message, check_time_end)
-        else:
-            await bot.send_message(message.chat.id, configuration['commands']['new']['wrong_time'])
-            await bot.register_next_step_handler(message, check_time_new)
+
+
 
     async def check_time_end(message):
         if re.match(re.compile(configuration['commands']["new"]['re_time_match']), message.text):
@@ -139,10 +168,12 @@ while True:
                 await bot.send_message(message.chat.id, configuration['commands']["new"]["written"])
             else:
                 await bot.send_message(message.chat.id, configuration['commands']["new"]["cant_be_later"])
-                await bot.register_next_step_handler(message, check_time_end)
+                #await bot.register_next_step_handler(message, check_time_end)
+                check_time_end(message)
         else:
             await bot.send_message(message.chat.id, configuration['commands']['new']['wrong_time'])
-            await bot.register_next_step_handler(message, check_time_end)
+            #await bot.register_next_step_handler(message, check_time_end)
+            check_time_end(message)
 
 
     @dp.message_handler(commands = [configuration['commands']['delete']['name']])
@@ -161,7 +192,8 @@ while True:
             res+=i[0]+'-'+i[1]+'\n'
         await bot.send_message(message.chat.id, res)
         await bot.send_message(message.chat.id, configuration['commands']['delete']['enter_time_delete'], parse_mode='html')
-        await bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
+        #await bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
+        #checking_delete(tmp, msg)
 
     async def checking_delete(tmp, message):
         if re.match(re.compile(configuration['commands']['delete']['re_date_time_match']), message.text):
@@ -170,7 +202,8 @@ while True:
             await bot.send_message(message.chat.id, configuration['commands']['delete']['deleted'])
         else:
             await bot.send_message(message.chat.id, configuration['commands']['delete']['wrong_format'])
-            await bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
+            #await bot.register_next_step_handler(message, lambda msg: checking_delete(tmp, msg))
+            #checking_delete(tmp, msg)
 
 
     @dp.message_handler(commands = [configuration['commands']['streams']['name']])
